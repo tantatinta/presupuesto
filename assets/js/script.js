@@ -2,13 +2,13 @@ const budgetController = (() => {
   const Expense = function(id, description, value) {
     this.id = id;
     this.description = description;
-    this.value = description;
+    this.value = value;
   };
 
   const Income = function(id, description, value) {
     this.id = id;
     this.description = description;
-    this.value = description;
+    this.value = value;
   };
 
   const data = {
@@ -57,7 +57,9 @@ const uiController = (() => {
     inputType: '.add__type',
     inputDescription: '.add__description',
     inputValue: '.add__value',
-    inputAddBtn: '.add__btn'
+    inputAddBtn: '.add__btn',
+    incomeContainer: '.income__list',
+    expensesContainer: '.expenses__list'
   }
   
   return {
@@ -67,6 +69,24 @@ const uiController = (() => {
         description: document.querySelector(domStrings.inputDescription).value,
         value: document.querySelector(domStrings.inputValue).value
       };
+    },
+    addListItem: function(obj, type){
+      let html, newHtml, element;
+      //create html string with placeholder text
+      if (type === "inc") {
+        element = domStrings.incomeContainer;
+        html = "<div class='item clearfix' id='income-%id%'><div class='item__description'>%description%</div><div class='right clearfix'><div class='item__value'>%value%</div><div class='item__delete'><button class='item__delete--btn'><i class='fa fa-window-close-o'></i></button></div></div></div>";
+      } else if (type === 'exp') {
+        element = domStrings.expensesContainer;
+        html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="fa fa-window-close-o"></i></button></div></div></div>';
+      }
+      //replace placeholder text with actual data
+      newHtml = html.replace('%id%', obj.id);
+      newHtml = newHtml.replace('%description%', obj.description);
+      newHtml = newHtml.replace('%value%', obj.value);
+
+      //insert html into DOM
+      document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);  
     },
     getDOMStrings: function() {
       return domStrings;
@@ -97,7 +117,7 @@ const controller = ((budgetCtrl, uiCtrl)=> {
     //add item to budget controller
     newItem = budgetController.addItem(input.type, input.description, input.value);
     //add item to ui
-
+    uiController.addListItem(newItem, input.type);
     //calculate budget
 
     //display budget
