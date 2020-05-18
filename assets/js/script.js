@@ -11,6 +11,19 @@ const budgetController = (() => {
     this.value = value;
   };
 
+  const calculateTotal = function(type) {
+    let sum = 0;
+    data.allItems[type].reduce((acc, curr) => {
+      return sum = acc + curr.value;
+    }, sum)
+    // let sum = 0;
+    // data.allItems[type].forEach((cur) => {
+    //   sum =+ cur.value;
+    // })
+      
+    data.totals[type] = sum;
+  };
+
   const data = {
     allItems: {
       exp: [],
@@ -19,7 +32,9 @@ const budgetController = (() => {
     totals: {
       exp: 0,
       inc: 0
-    }
+    },
+    budget: 0,
+    percentage: -1
   };
 
   return {
@@ -44,6 +59,29 @@ const budgetController = (() => {
       data.allItems[type].push(newItem);
       return newItem;
     },
+    calculateBudget: function() {
+      //calculate total income and expenses
+      calculateTotal('exp');
+      calculateTotal('inc');
+      
+      //calculate budget, inc minus exp
+      data.budget = data.totals.inc - data.totals.exp;
+      
+      //calculate the % of income we have spent
+      if (data.totals.inc > 0) {
+        data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+      } else {
+        data.percentage = -1;
+      }
+    },
+    getBudget: function() {
+      return {
+        budget: data.budget,
+        totalInc: data.totals.inc,
+        totalExp: data.totals.exp,
+        percentage: data.percentage
+      }
+    },
     testing: function() {
       console.log(data)
     }
@@ -59,7 +97,11 @@ const uiController = (() => {
     inputValue: '.add__value',
     inputAddBtn: '.add__btn',
     incomeContainer: '.income__list',
-    expensesContainer: '.expenses__list'
+    expensesContainer: '.expenses__list',
+    budgetLabel: '.budget__value',
+    incomeLabel: '.budget__income--value',
+    expensesLabel: '.budget__expenses--value',
+    percentageLabel: '.budget__expenses--percentage'
   }
   
   return {
@@ -67,7 +109,7 @@ const uiController = (() => {
       return {
         type: document.querySelector(domStrings.inputType).value, //inc or exp
         description: document.querySelector(domStrings.inputDescription).value,
-        value: document.querySelector(domStrings.inputValue).value
+        value: parseFloat(document.querySelector(domStrings.inputValue).value)
       };
     },
     addListItem: function(obj, type){
@@ -98,6 +140,18 @@ const uiController = (() => {
       });
       fieldsArray[0].focus();
     },
+    displayBudget: function(obj) {
+      document.querySelector(domStrings.budgetLabel).textContent = obj.budget;
+      document.querySelector(domStrings.incomeLabel).textContent = obj.totalInc;
+      document.querySelector(domStrings.expensesLabel).textContent = obj.totalExp;
+      
+
+      if (obj.percentage > 0) {
+        document.querySelector(domStrings.percentageLabel).textContent = obj.percentage + '%';
+      } else {
+        document.querySelector(domStrings.percentageLabel).textContent = '---';
+      }
+    },
     getDOMStrings: function() {
       return domStrings;
     }
@@ -121,10 +175,12 @@ const controller = ((budgetCtrl, uiCtrl)=> {
 
   const updateBudget = () => {
     //calculate budget
-
+    budgetController.calculateBudget();
     //return the budget
+    const budget = budgetController.getBudget();
 
     //display budget
+    uiController.displayBudget(budget);
   }
 
   const controlAddItem = () => {
@@ -132,20 +188,22 @@ const controller = ((budgetCtrl, uiCtrl)=> {
     //get input data
     input = uiController.getInput();    
     
-    //add item to budget controller
-    newItem = budgetController.addItem(input.type, input.description, input.value);
-    //add item to ui
-    uiController.addListItem(newItem, input.type);
+    //making sure fields are not empty when adding data
+    if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
+     
+      //add item to budget controller
+      newItem = budgetController.addItem(input.type, input.description, input.value);
+      //add item to ui
+      uiController.addListItem(newItem, input.type);
 
-    //clear fields
-    uiController.clearFields();
+      //clear fields
+      uiController.clearFields();
 
-    //calculate and update budget
-    updateBudget();
-    
+      //calculate and update budget
+      updateBudget();
+    }
   }
-
-  
+    
   return {
     init: function() {
       console.log('apps up');
