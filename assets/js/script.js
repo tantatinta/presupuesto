@@ -207,6 +207,12 @@ const controller = ((budgetCtrl, uiCtrl)=> {
   return {
     init: function() {
       console.log('apps up');
+      uiController.displayBudget({
+        budget: '0',
+        totalInc: '0',
+        totalExp: '0',
+        percentage: -1
+      });
       setUpEventListeners();
     }
   }
