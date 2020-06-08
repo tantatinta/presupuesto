@@ -33,7 +33,7 @@ body {
 
 .top {
   height: 40vh;
-  /* background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url(back.png); */
+  background-image: linear-gradient(rgba(156, 156, 156, 0.377), rgba(192, 192, 192, 0.397)), url(back.png);
   background-size: cover;
   background-position: center;
   position: relative;
@@ -45,7 +45,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #fff;
+  color: rgb(82, 81, 81);
 }
 
 .budget__title {
@@ -53,7 +53,7 @@ body {
   text-align: center;
   margin-bottom: 10px;
   font-weight: 300;
-  color: #555555;
+  color: rgb(82, 81, 81);
 }
 
 .budget__value {
@@ -62,7 +62,7 @@ body {
   text-align: center;
   margin-bottom: 25px;
   letter-spacing: 2px;
-  color: #555555;
+  color:  rgb(82, 81, 81);
 }
 
 .budget__income,
