@@ -59,6 +59,20 @@ const budgetController = (() => {
       data.allItems[type].push(newItem);
       return newItem;
     },
+    deleteItem: function(type, id) {
+      
+      let ids, index;
+      ids = data.allItems[type].map(function(current) {
+        return current.id;
+      });
+      index = ids.indexOf(id)
+      
+      if (index !== -1) {
+        data.allItems[type].splice(index, 1);
+        console.log(data.allItems)
+      }
+      
+    },
     calculateBudget: function() {
       //calculate total income and expenses
       calculateTotal('exp');
@@ -101,7 +115,8 @@ const uiController = (() => {
     budgetLabel: '.budget__value',
     incomeLabel: '.budget__income--value',
     expensesLabel: '.budget__expenses--value',
-    percentageLabel: '.budget__expenses--percentage'
+    percentageLabel: '.budget__expenses--percentage',
+    container: '.container'
   }
   
   return {
@@ -117,10 +132,10 @@ const uiController = (() => {
       //create html string with placeholder text
       if (type === "inc") {
         element = domStrings.incomeContainer;
-        html = "<div class='item clearfix' id='income-%id%'><div class='item__description'>%description%</div><div class='right clearfix'><div class='item__value'>%value%</div><div class='item__delete'><button class='item__delete--btn'><i class='fa fa-window-close-o'></i></button></div></div></div>";
+        html = "<div class='item clearfix' id='inc-%id%'><div class='item__description'>%description%</div><div class='right clearfix'><div class='item__value'>%value%</div><div class='item__delete'><button class='item__delete--btn'><i class='fa fa-window-close-o'></i></button></div></div></div>";
       } else if (type === 'exp') {
         element = domStrings.expensesContainer;
-        html = '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="fa fa-window-close-o"></i></button></div></div></div>';
+        html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="fa fa-window-close-o"></i></button></div></div></div>';
       }
       //replace placeholder text with actual data
       newHtml = html.replace('%id%', obj.id);
@@ -129,6 +144,12 @@ const uiController = (() => {
 
       //insert html into DOM
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);  
+    },
+    deleteListItem: function(selectorId) {
+      let el = document.getElementById(selectorId)
+      document.getElementById(selectorId);
+      el.parentNode.removeChild(el);
+
     },
     clearFields: function() {
       let fields, fieldsArray;
@@ -170,6 +191,7 @@ const controller = ((budgetCtrl, uiCtrl)=> {
       if(event.keyCode === 13 || event.which === 13) {
         controlAddItem();
       }
+    document.querySelector(dom.container).addEventListener('click', controlDeleteItem);
   })
   };  
 
@@ -181,7 +203,7 @@ const controller = ((budgetCtrl, uiCtrl)=> {
 
     //display budget
     uiController.displayBudget(budget);
-  }
+  };
 
   const controlAddItem = () => {
     let input, newItem;
@@ -202,8 +224,32 @@ const controller = ((budgetCtrl, uiCtrl)=> {
       //calculate and update budget
       updateBudget();
     }
-  }
+  };
+  
+  const controlDeleteItem = e => {
+    let itemId, splitId, type, id;
+    itemId = e.target.parentNode.parentNode.parentNode.parentNode.id;
+    console.log(itemId)
+
+    if (itemId) {
+      
+      splitId = itemId.split('-');
+      type = splitId[0];
+      id = parseInt(splitId[1]);
+      // console.log(id)
+      // console.log(type)
+
+      // delete item from data structure
+      budgetController.deleteItem(type, id);
+      // delete item from ui
+      uiController.deleteListItem(itemId);
+      // update and show new budget
+      updateBudget();
+    }
+
+  };
     
+ 
   return {
     init: function() {
       console.log('apps up');
