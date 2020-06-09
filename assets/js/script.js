@@ -182,7 +182,7 @@ const uiController = (() => {
 })()
 
 //global app controller
-const controller = ((budgetCtrl, uiCtrl)=> {
+const controller = ((budgetCtrl, uiCtrl) => {
 
   const setUpEventListeners = () => {
     const dom = uiController.getDOMStrings();
@@ -205,6 +205,14 @@ const controller = ((budgetCtrl, uiCtrl)=> {
     uiController.displayBudget(budget);
   };
 
+  const updatePercentages = () => {
+    //calc percentages
+
+    //read percentages from budgetController
+
+    //update ui
+  };
+
   const controlAddItem = () => {
     let input, newItem;
     //get input data
@@ -223,6 +231,9 @@ const controller = ((budgetCtrl, uiCtrl)=> {
 
       //calculate and update budget
       updateBudget();
+
+      //calculate and update %
+      updatePercentages();
     }
   };
   
