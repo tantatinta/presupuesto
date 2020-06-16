@@ -142,7 +142,8 @@ const uiController = (() => {
     expensesLabel: '.budget__expenses--value',
     percentageLabel: '.budget__expenses--percentage',
     container: '.container',
-    expPercentLabel: '.item__percentage'
+    expPercentLabel: '.item__percentage',
+    dateLabel: '.budget__title--month'
   }
 
   const formatNumber = (num, type) => {
@@ -239,7 +240,18 @@ const uiController = (() => {
           current.textContent = '---';
         }
       });
-    },    
+    },
+    displayDate: function()  {
+      let now, year, month, options;
+
+      options = {month: 'long'}
+      now = new Date();
+      year = now.getFullYear();
+      month = new Intl.DateTimeFormat('en-US', options).format(now);
+
+      document.querySelector(domStrings.dateLabel).textContent = month + ' ' + year;
+
+    },
     getDOMStrings: function() {
       return domStrings;
     }
@@ -337,6 +349,7 @@ const controller = ((budgetCtrl, uiCtrl) => {
         percentage: -1
       });
       setUpEventListeners();
+      uiController.displayDate();
     }
   }
 
