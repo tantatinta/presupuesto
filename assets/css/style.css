@@ -25,7 +25,9 @@ body {
 
 .right { float: right; }
 .red { color: rgb(247, 105, 23) !important; }
-.red-focus:focus { border: 1px solid rgb(255, 170, 73) !important; }
+.red-focus:focus { border: 1px solid rgb(247, 105, 23) !important; }
+.green { color:  rgb(49, 94, 31) !important; }
+.green-focus:focus { border: 1px solid  rgb(49, 94, 31) !important; }
 
 /**********************************************
 *** TOP PART
