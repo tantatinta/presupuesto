@@ -164,7 +164,13 @@ const uiController = (() => {
 
     return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
 
-  }
+  };
+
+  const nodeListForEach = function(list, cbf) {
+    for (let i = 0; i < list.length; i++) {
+      cbf(list[i], i);
+    }
+  };
   
   return {
     getInput: function() {
@@ -226,12 +232,6 @@ const uiController = (() => {
     displayPercentages: function(percentages) {
       let fields =  document.querySelectorAll(domStrings.expPercentLabel);
       
-      const nodeListForEach = function(list, cbf) {
-        for (let i = 0; i < list.length; i++) {
-          cbf(list[i], i);
-        }
-      };
-
       nodeListForEach(fields, function(current, index) {
         
         if(percentages[index] > 0) {
@@ -251,6 +251,34 @@ const uiController = (() => {
 
       document.querySelector(domStrings.dateLabel).textContent = month + ' ' + year;
 
+    },    
+    changeType: function() {
+      let type = this.getInput();
+      let fields = document.querySelectorAll(
+        domStrings.inputType + ',' +
+        domStrings.inputDescription + ',' +
+        domStrings.inputValue        
+      );
+      
+      if (type.type === 'exp') {
+        console.log("nay");
+        
+        nodeListForEach(fields, function(cur) {
+          cur.classList.remove('green-focus'); 
+          cur.classList.add('red-focus');                 
+        });
+        document.querySelector(domStrings.inputAddBtn).classList.remove('green');
+        document.querySelector(domStrings.inputAddBtn).classList.add('red');
+      } else if (type.type === 'inc') {
+        console.log('yay');
+
+        nodeListForEach(fields, function(cur) {
+          cur.classList.remove('red-focus');
+          cur.classList.add('green-focus');         
+        });
+        document.querySelector(domStrings.inputAddBtn).classList.remove('red');
+        document.querySelector(domStrings.inputAddBtn).classList.add('green');
+      }
     },
     getDOMStrings: function() {
       return domStrings;
@@ -271,6 +299,8 @@ const controller = ((budgetCtrl, uiCtrl) => {
         controlAddItem();
       }
     document.querySelector(dom.container).addEventListener('click', controlDeleteItem);
+    //this is glitchy but working:
+    document.querySelector(dom.inputType).addEventListener('change', uiController.changeType(dom.inputType));
   })
   };  
 
